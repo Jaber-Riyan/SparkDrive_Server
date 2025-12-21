@@ -7,6 +7,7 @@ import { sendEmail } from "../../utils/sendEmail"
 
 export const VERIFICATION_OTP_EXPIRATION = 2 * 60
 export const FORGOT_PASSWORD_OTP_EXPIRATION = 2 * 60
+export const FORGOT_PROTECTED_FOLDER_PIN_OTP_EXPIRATION = 2 * 60
 
 export const generateOtp = (length = 6) => {
     // 6 Digit OTP
@@ -139,7 +140,69 @@ const verifyForgotPasswordOTP = async (email: string, otp: string) => {
     }
 
     await Promise.all([
-        User.findOneAndUpdate({ email }, { isVerified: true }, { runValidators: true }),
+        redisClient.del([redisKey])
+    ])
+
+};
+
+const sendForgotProtectedFolderPinOTP = async (email: string) => {
+    const user = await User.findOne({ email })
+
+    if (!user) {
+        throw new AppError(StatusCodes.NOT_FOUND, "User not found")
+    }
+
+    if (!user.isVerified) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "You are not verified user")
+    }
+
+    const otp = generateOtp()
+
+    const redisKey = `otp-forgot-protected-folder-pin-${email}`
+
+    await redisClient.set(redisKey, otp, {
+        expiration: {
+            type: "EX",
+            value: FORGOT_PASSWORD_OTP_EXPIRATION
+        }
+    })
+
+    await sendEmail({
+        to: email,
+        subject: "Your Forgot Protected Folder PIN OTP Code",
+        templateName: "forgotProtectedFolderPIN",
+        templateData: {
+            name: user.name,
+            otp
+        }
+    })
+
+};
+
+const verifyForgotProtectedFolderPinOTP = async (email: string, otp: string) => {
+    const user = await User.findOne({ email })
+
+    if (!user) {
+        throw new AppError(404, "User not found")
+    }
+
+    if (!user.isVerified) {
+        throw new AppError(401, "You are not verified user")
+    }
+
+    const redisKey = `otp-forgot-protected-folder-pin-${email}`
+
+    const savedOtp = await redisClient.get(redisKey)
+
+    if (!savedOtp) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Invalid OTP");
+    }
+
+    if (savedOtp !== otp) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Invalid OTP");
+    }
+
+    await Promise.all([
         redisClient.del([redisKey])
     ])
 
@@ -149,5 +212,7 @@ export const OTPService = {
     sendVerificationOTP,
     verifyVerificationOTP,
     sendForgotPasswordOTP,
-    verifyForgotPasswordOTP
+    verifyForgotPasswordOTP,
+    sendForgotProtectedFolderPinOTP,
+    verifyForgotProtectedFolderPinOTP
 }

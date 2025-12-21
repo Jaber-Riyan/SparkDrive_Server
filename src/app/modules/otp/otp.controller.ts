@@ -60,9 +60,39 @@ const verifyForgotPasswordOTP = catchAsync(async (req: Request, res: Response) =
     });
 })
 
+const sendForgotProtectedFolderPinOTP = catchAsync(async (req: Request, res: Response) => {
+
+    const { email } = req.body
+
+    await OTPService.sendForgotProtectedFolderPinOTP(email)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "OTP Sent Successfully",
+        data: null,
+    });
+})
+
+const verifyForgotProtectedFolderPinOTP = catchAsync(async (req: Request, res: Response) => {
+
+    const { email, otp } = req.body
+
+    await OTPService.verifyForgotProtectedFolderPinOTP(email, otp)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "OTP Verified Successfully",
+        data: null,
+    });
+})
+
 export const OTPController = {
     sendVerificationOTP,
     verifyVerificationOTP,
     sendForgotPasswordOTP,
-    verifyForgotPasswordOTP
+    verifyForgotPasswordOTP,
+    sendForgotProtectedFolderPinOTP,
+    verifyForgotProtectedFolderPinOTP
 };

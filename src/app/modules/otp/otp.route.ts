@@ -12,4 +12,9 @@ router.post("/verify", OTPController.verifyVerificationOTP);
 router.post("/send/forgot-password", OTPController.sendForgotPasswordOTP)
 router.post("/verify/forgot-password", OTPController.verifyForgotPasswordOTP)
 
+// Forgot Protected Folder PIN Verification
+router.post("/send/forgot/protected/folder-pin", OTPController.sendForgotProtectedFolderPinOTP)
+router.post("/verify/forgot/protected/folder-pin", OTPController.verifyForgotProtectedFolderPinOTP)
+
+
 export const OtpRoutes = router;
