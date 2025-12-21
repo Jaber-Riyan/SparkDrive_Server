@@ -6,9 +6,6 @@ import { User } from "../user/user.model"
 import bcryptjs from "bcryptjs"
 import httpStatus from "http-status-codes"
 import type { IAuthProvider } from "../user/user.interface"
-import { generateJwtToken } from "../../utils/jwt"
-import { sendEmail } from "../../utils/sendEmail"
-import jwt from "jsonwebtoken"
 
 // const credentialsLogin = async (payload: Partial<IUser>) => {
 //     const { email, password: payloadPassword } = payload
@@ -60,7 +57,7 @@ const changePassword = async (oldPassword: string, newPassword: string, decodedT
 }
 
 const resetPassword = async (payload: Record<string, any>, decodedToken: JwtPayload) => {
-    if (payload.id !== decodedToken.userId) {
+    if (!decodedToken.userId) {
         throw new AppError(401, "You can not reset your password")
     }
 
@@ -90,7 +87,7 @@ const setPassword = async (decodedToken: JwtPayload, plainPassword: string) => {
     }
 
     if (user.password && user.auths.some(providerObj => providerObj.provider === "google")) {
-        throw new AppError(httpStatus.BAD_REQUEST, "You have already set your password. Now you can change the password from your profile password update")
+        throw new AppError(httpStatus.BAD_REQUEST, "You have already set your password. Now you can change the password to your profile")
     }
 
     const hashedPassword = await bcryptjs.hash(
@@ -113,55 +110,10 @@ const setPassword = async (decodedToken: JwtPayload, plainPassword: string) => {
 
 }
 
-const forgotPassword = async (email: string) => {
-    try {
-        const isUserExist = await User.findOne({ email })
-
-        if (!isUserExist) {
-            throw new AppError(httpStatus.BAD_REQUEST, "User does not Exist")
-        }
-
-        if (!isUserExist.isVerified) {
-            throw new AppError(httpStatus.BAD_REQUEST, "User is not Verified!")
-        }
-
-        if (isUserExist.isDeleted) {
-            throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
-        }
-
-        const jwtPayload = {
-            userId: isUserExist._id,
-            email: isUserExist.email,
-            role: isUserExist.role
-        }
-
-        const resetToken = jwt.sign(jwtPayload, envVars.JWT_ACCESS_SECRET, {
-            expiresIn: "10m",
-            algorithm: "HS512"
-        })
-
-        const passwordRestLink = `${envVars.FRONTEND_URL}/reset-password?id=${isUserExist._id}&token=${resetToken}`
-
-        sendEmail({
-            to: isUserExist.email,
-            subject: "Password Reset",
-            templateName: "forgetPassword",
-            templateData: {
-                name: isUserExist.name,
-                passwordRestLink
-            }
-        })
-
-    } catch (error: any) {
-        throw new Error(error)
-    }
-}
-
 export const AuthServices = {
     // credentialsLogin,
     getNewAccessToken,
     changePassword,
     resetPassword,
-    setPassword,
-    forgotPassword
+    setPassword
 }

@@ -5,10 +5,10 @@ import { StatusCodes } from "http-status-codes"
 import { redisClient } from "../../config/redis.config"
 import { sendEmail } from "../../utils/sendEmail"
 
-const VERIFICATION_OTP_EXPIRATION = 2 * 60
-const FORGOT_PASSWORD_OTP_EXPIRATION = 2 * 60
+export const VERIFICATION_OTP_EXPIRATION = 2 * 60
+export const FORGOT_PASSWORD_OTP_EXPIRATION = 2 * 60
 
-const generateOtp = (length = 6) => {
+export const generateOtp = (length = 6) => {
     // 6 Digit OTP
     const otp = crypto.randomInt(10 ** (length - 1), 10 ** length).toString()
 

@@ -15,6 +15,6 @@ router.get("/me", checkAuth(...Object.values(Role)), UserControllers.getMe)
 
 router.get("/:id", checkAuth(Role.SUPER_ADMIN), UserControllers.getSingleUser)
 
-router.patch("/:id", validateRequest(updateUserZodSchema), UserControllers.updateUser)
+router.patch("/:id", checkAuth(...Object.values(Role)), validateRequest(updateUserZodSchema), UserControllers.updateUser)
 
 export const UserRoutes = router

@@ -13,7 +13,6 @@ router.post("/logout", AuthControllers.logout)
 router.post("/change-password", checkAuth(...Object.values(Role)), AuthControllers.changePassword)
 router.post("/reset-password", checkAuth(...Object.values(Role)), AuthControllers.resetPassword)
 router.post("/set-password", checkAuth(...Object.values(Role)), AuthControllers.setPassword)
-router.post("/forgot-password", AuthControllers.forgotPassword)
 
 
 // Google OAuth Related APIs Routes
