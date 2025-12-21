@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const fileSchema = new Schema<IFile>(
+const fileSchema = new Schema(
     {
         name: String,
         size: Number,
@@ -26,4 +26,4 @@ const fileSchema = new Schema<IFile>(
     }
 );
 
-export const File = model<IFile>("File", fileSchema)
+export const File = model("File", fileSchema)
