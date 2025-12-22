@@ -6,6 +6,7 @@ import AppError from "../../errorHelpers/AppError"
 import httpStatus from "http-status-codes"
 import { envVars } from "../../config/env"
 import bcryptjs from "bcryptjs"
+import { Activity } from "../stats/stats.model"
 
 const createFolder = async (payload: Partial<IFolder>, user: JwtPayload) => {
     const isUserExist = await User.findById(user?.userId)
@@ -20,6 +21,15 @@ const createFolder = async (payload: Partial<IFolder>, user: JwtPayload) => {
     }
 
     const newFolder = await Folder.create(folderPayload)
+
+    // Activity Store
+    await Activity.create({
+        owner: user?.userId,
+        type: "folder_create",
+        itemId: newFolder._id,
+        name: newFolder.name,
+        created: new Date().toISOString()
+    })
 
     return newFolder
 }

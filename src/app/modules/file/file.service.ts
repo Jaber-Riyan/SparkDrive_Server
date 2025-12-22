@@ -5,6 +5,7 @@ import { User } from "../user/user.model"
 import AppError from "../../errorHelpers/AppError"
 import httpStatus from "http-status-codes"
 import { Folder } from "../folder/folder.model"
+import { Activity } from "../stats/stats.model";
 
 const createFile = async (payload: any, user: JwtPayload) => {
     const session = await File.startSession()
@@ -24,8 +25,8 @@ const createFile = async (payload: any, user: JwtPayload) => {
         }
 
 
-        if (userInfo.usedStorage + payload.imageInfo.size > userInfo?.totalStorage) {
-            throw new AppError(httpStatus.FORBIDDEN, "Insufficient storage")
+        if ((userInfo.usedStorage! + payload.imageInfo.size) > userInfo.totalStorage!) {
+            throw new AppError(httpStatus.BAD_REQUEST, "Insufficient storage");
         }
 
         const newFilePayload = {
@@ -39,10 +40,20 @@ const createFile = async (payload: any, user: JwtPayload) => {
 
         const [newFile] = await File.create([newFilePayload], { session })
 
-        folder.fileUrls.push(newFile._id);
+        // Activity Store
+        await Activity.create({
+            owner: user?.userId,
+            type: "file_create",
+            itemId: newFile._id,
+            name: newFile.name,
+            fileUrl: newFile.url,
+            created: new Date().toISOString()
+        })
+
+        folder.fileUrls!.push(newFile._id);
         await folder.save({ session });
 
-        userInfo.usedStorage += newFile.size;
+        userInfo.usedStorage! += newFile.size;
         await userInfo.save({ session });
 
         // Transaction Commit and End the Session
@@ -101,7 +112,6 @@ const updateFile = async (fileId: string, user: JwtPayload, payload: { name: str
     return file
 }
 
-
 const duplicateFile = async (fileId: string, user: JwtPayload) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -127,7 +137,7 @@ const duplicateFile = async (fileId: string, user: JwtPayload) => {
             throw new AppError(httpStatus.NOT_FOUND, "Folder Not Found");
         }
 
-        if (userInfo.usedStorage + file.size > userInfo.totalStorage) {
+        if (userInfo.usedStorage! + file.size > userInfo.totalStorage!) {
             throw new AppError(
                 httpStatus.BAD_REQUEST,
                 "Insufficient storage"
@@ -148,10 +158,10 @@ const duplicateFile = async (fileId: string, user: JwtPayload) => {
             { session }
         );
 
-        folder.fileUrls.push(duplicatedFile[0]._id);
+        folder.fileUrls!.push(duplicatedFile[0]._id);
         await folder.save({ session });
 
-        userInfo.usedStorage += file.size;
+        userInfo.usedStorage! += file.size;
         await userInfo.save({ session });
 
         // Commit Transaction
@@ -189,7 +199,7 @@ const deleteSingleFile = async (fileId: string, user: JwtPayload) => {
 
         userInfo.usedStorage = Math.max(
             0,
-            userInfo.usedStorage - file.size
+            userInfo.usedStorage! - file.size
         );
         await userInfo.save({ session });
 

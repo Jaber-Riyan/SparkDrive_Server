@@ -24,7 +24,7 @@ const userSchema = new Schema<IUser>({
     isDeleted: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
     auths: [authProviderSchema],
-    totalStorage: { type: Number, default: 16106127360 },
+    totalStorage: { type: Number, default: 15 * 1024 * 1024 * 1024 },
     usedStorage: { type: Number, default: 0 }
 }, {
     timestamps: true,

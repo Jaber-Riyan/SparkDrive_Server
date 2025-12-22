@@ -13,6 +13,7 @@ const folderSchema = new Schema<IFolder>(
             {
                 type: Schema.Types.ObjectId,
                 ref: "File",
+                default: []
             }
         ],
         isDeleted: { type: Boolean, default: false },
