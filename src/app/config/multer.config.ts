@@ -2,7 +2,7 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { cloudinaryUpload } from "./cloudinary.config";
 
-const storage = new CloudinaryStorage({
+const storage = new CloudinaryStorage({ 
     cloudinary: cloudinaryUpload,
     params: async (req, file) => {
         const fileName = file.originalname
@@ -20,9 +20,21 @@ const storage = new CloudinaryStorage({
 
         const extension = file.originalname.split(".").pop()?.toLowerCase();
 
+        const mime = file.mimetype;
+
+        let resourceType: "image" | "raw" = "raw";
+
+        if (mime.startsWith("image/")) {
+            resourceType = "image";
+        } else if (mime === "application/pdf") {
+            resourceType = "image"; // PDF preview
+        } else {
+            resourceType = "raw"; // DOCX, ZIP, etc
+        }
+
         return {
             public_id: uniqueFileName, // no extension
-            format: extension,         // let Cloudinary save with correct format
+            resource_type: resourceType
         };
     },
 });

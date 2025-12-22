@@ -48,7 +48,10 @@ const getSingleFolder = async (folderId: string, user: JwtPayload) => {
         throw new AppError(httpStatus.NOT_FOUND, "User Not Found!!")
     }
 
-    const folder = await Folder.findOne({ _id: folderId, isDeleted: false, protected: false, owner: user?.userId }).populate("fileUrls")
+    const folder = await Folder.findOne({ _id: folderId, isDeleted: false, protected: false, owner: user?.userId }).populate({
+        path: "fileUrls",
+        match: { isDeleted: false }
+    })
 
     if (!folder) {
         throw new AppError(httpStatus.NOT_FOUND, "Folder Not Found!!")
@@ -107,12 +110,12 @@ const duplicateFolder = async (folderId: string, user: JwtPayload) => {
         throw new AppError(httpStatus.NOT_FOUND, "Folder Not Found!!")
     }
 
-    const withoutNameFolder = await Folder.findOne({ _id: folderId, isDeleted: false, owner: user?.userId }).select("-name").select("-owner")
+    const withoutNameOwnerFolder = await Folder.findOne({ _id: folderId, isDeleted: false, owner: user?.userId }).select("-name").select("-owner")
 
     const duplicateFolder = await Folder.create({
         name: `${folder.name} Copy`,
         owner: user?.userId,
-        ...withoutNameFolder
+        ...withoutNameOwnerFolder
     })
 
     return duplicateFolder
@@ -175,6 +178,67 @@ const forgotProtectedFolderPIN = async (payload: { pin: string }, user: JwtPaylo
     await isUserExist.save()
 }
 
+const getProtectedFolders = async (user: JwtPayload) => {
+    const isUserExist = await User.findById(user?.userId)
+
+    if (!isUserExist) {
+        throw new AppError(httpStatus.NOT_FOUND, "User Not Found!!")
+    }
+
+    const folders = await Folder.find({ owner: user?.userId, isDeleted: false, protected: true }).select("-fileUrls").lean()
+
+    const transformFolders = folders.map((folder, index) => ({
+        items: folder.fileUrls?.length ?? 0,
+        ...folder
+    }))
+
+    return transformFolders
+}
+
+const markFavoriteFolder = async (fileId: string, user: JwtPayload) => {
+    const userInfo = await User.findById(user.userId);
+    if (!userInfo) {
+        throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+    }
+
+    const folder = await Folder.findOne({
+        _id: fileId,
+        isDeleted: false,
+        owner: user.userId,
+    });
+
+    if (!folder) {
+        throw new AppError(httpStatus.NOT_FOUND, "Folder Not Found");
+    }
+
+    folder.favorite = true;
+    await folder.save()
+
+    return folder
+}
+
+const markUnFavoriteFolder = async (fileId: string, user: JwtPayload) => {
+    const userInfo = await User.findById(user.userId);
+    if (!userInfo) {
+        throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+    }
+
+    const folder = await Folder.findOne({
+        _id: fileId,
+        isDeleted: false,
+        owner: user.userId,
+    });
+
+    if (!folder) {
+        throw new AppError(httpStatus.NOT_FOUND, "Folder Not Found");
+    }
+
+    folder.favorite = false;
+    await folder.save()
+
+    return folder
+}
+
 export const FolderServices = {
     createFolder,
     getOwnerWiseFolders,
@@ -184,5 +248,8 @@ export const FolderServices = {
     duplicateFolder,
     setProtectedFolder,
     setProtectedFolderPIN,
-    forgotProtectedFolderPIN
+    forgotProtectedFolderPIN,
+    getProtectedFolders,
+    markFavoriteFolder,
+    markUnFavoriteFolder
 }

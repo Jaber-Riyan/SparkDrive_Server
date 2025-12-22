@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
+import { IFile } from "./file.interface";
 
-const fileSchema = new Schema(
+const fileSchema = new Schema<IFile>(
     {
         name: String,
         size: Number,
@@ -10,6 +11,7 @@ const fileSchema = new Schema(
         owner: {
             type: Schema.Types.ObjectId,
             ref: "User",
+            required: true
         },
 
         folder: {
@@ -19,6 +21,7 @@ const fileSchema = new Schema(
         },
 
         isDeleted: { type: Boolean, default: false },
+        favorite: { type: Boolean, default: false },
     },
     {
         timestamps: true,
@@ -26,4 +29,4 @@ const fileSchema = new Schema(
     }
 );
 
-export const File = model("File", fileSchema)
+export const File = model<IFile>("File", fileSchema)

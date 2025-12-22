@@ -9,9 +9,21 @@ cloudinary.config({
     api_secret: envVars.CLOUDINARY.CLOUDINARY_API_SECRET
 })
 
-export const uploadBufferToCloudinary = async (buffer: Buffer, fileName: string): Promise<UploadApiResponse | undefined> => {
+type CloudinaryResourceType = "image" | "raw";
+
+export const uploadBufferToCloudinary = async (buffer: Buffer, fileName: string, mimeType: string): Promise<UploadApiResponse | undefined> => {
     try {
-        return new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
+            let resourceType: CloudinaryResourceType = "raw";
+
+            if (mimeType.startsWith("image/")) {
+                resourceType = "image";          // PNG, JPG, WEBP
+            } else if (mimeType === "application/pdf") {
+                resourceType = "image";          // PDF preview
+            } else {
+                resourceType = "raw";            // DOCX, ZIP, etc
+            }
+
             const public_id = `pdf/${fileName}-${Date.now()}`
 
             const bufferStream = new stream.PassThrough()
@@ -19,7 +31,7 @@ export const uploadBufferToCloudinary = async (buffer: Buffer, fileName: string)
 
             cloudinary.uploader.upload_stream(
                 {
-                    resource_type: "auto",
+                    resource_type: "raw",
                     public_id,
                     folder: "pdf"
                 },
@@ -40,7 +52,7 @@ export const uploadBufferToCloudinary = async (buffer: Buffer, fileName: string)
 
 export const deleteImageFromCloudinary = async (url: string) => {
     try {
-        const regex = /\/v\d+\/(.*?)\.(jpg|jpeg|png|gif|webp|pdf)$/i;
+        const regex = /\/v\d+\/(.*?)\.(jpg|jpeg|png|gif|webp|pdf|docx)$/i;
 
         const match = url.match(regex);
 

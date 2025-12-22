@@ -8,9 +8,13 @@ import { createFolderZodSchema, updateFolderZodSchema } from "./folder.validatio
 const router = Router()
 
 router.post("/create", checkAuth(...Object.values(Role)), validateRequest(createFolderZodSchema), FolderControllers.createFolder)
+
 router.get("/my-folders", checkAuth(...Object.values(Role)), FolderControllers.getOwnerWiseFolders)
+
 router.get("/folder/:id", checkAuth(...Object.values(Role)), FolderControllers.getSingleFolder)
+
 router.patch("/folder/:id", checkAuth(...Object.values(Role)), validateRequest(updateFolderZodSchema), FolderControllers.updateFolder)
+
 router.delete("/folder/:id", checkAuth(...Object.values(Role)), FolderControllers.deleteSingleFolder)
 
 // Duplicate Folder
@@ -25,5 +29,13 @@ router.post("/set/protected/folder-pin", checkAuth(...Object.values(Role)), Fold
 // Forgot Protected Folder PIN 
 router.post("/forgot/protected/folder-pin", checkAuth(...Object.values(Role)), FolderControllers.forgotProtectedFolderPIN)
 
+// Protected Folder 
+router.get("/protected/folders", checkAuth(...Object.values(Role)), FolderControllers.getProtectedFolders)
+
+// Mark Folder As Favorite
+router.get("/mark/favorite/folder/:id", checkAuth(...Object.values(Role)), FolderControllers.markFavoriteFolder)
+
+// Mark Folder As Un Favorite
+router.get("/mark/un-favorite/folder/:id", checkAuth(...Object.values(Role)), FolderControllers.markUnFavoriteFolder)
 
 export const FolderRoutes = router

@@ -16,7 +16,8 @@ const folderSchema = new Schema<IFolder>(
             }
         ],
         isDeleted: { type: Boolean, default: false },
-        protected: { type: Boolean, default: false }
+        protected: { type: Boolean, default: false },
+        favorite: { type: Boolean, default: false },
     },
     {
         timestamps: true,

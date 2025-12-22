@@ -7,4 +7,5 @@ export interface IFolder {
     fileUrls?: Types.ObjectId[]
     isDeleted?: boolean
     protected?: boolean
+    favorite?: boolean
 }

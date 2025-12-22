@@ -3,10 +3,17 @@ import { UserRoutes } from "../modules/user/user.route";
 import { AuthRoutes } from "../modules/auth/auth.route";
 import { OtpRoutes } from "../modules/otp/otp.route";
 import { FolderRoutes } from "../modules/folder/folder.route";
+import { FileRoutes } from "../modules/file/file.route";
+import { StatsRoutes } from "../modules/stats/stats.route";
 
 export const router = Router()
 
-const moduleRoutes = [
+export interface IModuleRoutes {
+    path: string
+    route: Router
+}
+
+const moduleRoutes: IModuleRoutes[] = [
     {
         path: "/users",
         route: UserRoutes
@@ -22,6 +29,14 @@ const moduleRoutes = [
     {
         path: "/folders",
         route: FolderRoutes
+    },
+    {
+        path: "/files",
+        route: FileRoutes
+    },
+    {
+        path: "/stats",
+        route: StatsRoutes
     }
 ]
 

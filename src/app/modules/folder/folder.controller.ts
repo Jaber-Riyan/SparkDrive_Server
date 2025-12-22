@@ -118,6 +118,39 @@ const forgotProtectedFolderPIN = catchAsync(async (req: Request, res: Response, 
     })
 })
 
+const getProtectedFolders = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await FolderServices.getProtectedFolders(req.user as JwtPayload)
+
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        message: "Protected Folders Retrieved Successfully",
+        success: true,
+        data: result
+    })
+})
+
+const markFavoriteFolder = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await FolderServices.markFavoriteFolder(req.params.id, req.user as JwtPayload)
+
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        message: "Mark Folder As Favorite Successfully",
+        success: true,
+        data: result
+    })
+})
+
+const markUnFavoriteFolder = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await FolderServices.markUnFavoriteFolder(req.params.id, req.user as JwtPayload)
+
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        message: "Mark Folder As Un Favorite Successfully",
+        success: true,
+        data: result
+    })
+})
+
 export const FolderControllers = {
     createFolder,
     getOwnerWiseFolders,
@@ -127,5 +160,8 @@ export const FolderControllers = {
     duplicateFolder,
     setProtectedFolder,
     setProtectedFolderPIN,
-    forgotProtectedFolderPIN
+    forgotProtectedFolderPIN,
+    getProtectedFolders,
+    markFavoriteFolder,
+    markUnFavoriteFolder
 }
