@@ -11,6 +11,9 @@ router.post("/create", checkAuth(...Object.values(Role)), validateRequest(create
 
 router.get("/my-folders", checkAuth(...Object.values(Role)), FolderControllers.getOwnerWiseFolders)
 
+// Protected Folder 
+router.get("/protected/folders", checkAuth(...Object.values(Role)), FolderControllers.getProtectedFolders)
+
 router.get("/folder/:id", checkAuth(...Object.values(Role)), FolderControllers.getSingleFolder)
 
 router.patch("/folder/:id", checkAuth(...Object.values(Role)), validateRequest(updateFolderZodSchema), FolderControllers.updateFolder)
@@ -28,9 +31,6 @@ router.post("/set/protected/folder-pin", checkAuth(...Object.values(Role)), Fold
 
 // Forgot Protected Folder PIN 
 router.post("/forgot/protected/folder-pin", checkAuth(...Object.values(Role)), FolderControllers.forgotProtectedFolderPIN)
-
-// Protected Folder 
-router.get("/protected/folders", checkAuth(...Object.values(Role)), FolderControllers.getProtectedFolders)
 
 // Mark Folder As Favorite
 router.get("/mark/favorite/folder/:id", checkAuth(...Object.values(Role)), FolderControllers.markFavoriteFolder)
