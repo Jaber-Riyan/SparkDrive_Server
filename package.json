@@ -3,9 +3,9 @@
   "main": "dist/server.js",
   "private": true,
   "scripts": {
-    "start": "node ./dist/server.js",
-    "dev": "bun tsx watch src/server.ts",
-    "build": "tsc",
+    "start": "node init && node ./dist/server.js",
+    "dev": "node init && bun tsx watch src/server.ts",
+    "build": "node init && tsc",
     "lint": "bun eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
