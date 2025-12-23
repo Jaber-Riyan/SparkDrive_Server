@@ -135,30 +135,37 @@ Backend REST API (Node.js + TypeScript)
 
 ## Environments Variables
 ```bash
-PORT=
-DB_URL=
-NODE_ENV=
+# Server Configuration
+PORT=            # Backend server port where server run (e.g. 5000)
+NODE_ENV=        # Application environment (development | production)
+DB_URL=          # MongoDB connection string (MongoDB Atlas / Local MongoDB)
 
-BCRYPT_SALT_ROUND=
+# Security & Password Hashing
+BCRYPT_SALT_ROUND=   # Password hash strength (higher = more secure but slower)
 
-JWT_ACCESS_SECRET=
-JWT_ACCESS_EXPIRES=
-JWT_REFRESH_SECRET=
-JWT_REFRESH_EXPIRES=
+# JWT Authentication
+JWT_ACCESS_SECRET=      # Access token sign secret key
+JWT_ACCESS_EXPIRES=     # Access token expiry time (e.g. 1d, 12h)
 
-SUPER_ADMIN_EMAIL=
-SUPER_ADMIN_PASSWORD=
+JWT_REFRESH_SECRET=     # Refresh token sign secret key
+JWT_REFRESH_EXPIRES=    # Refresh token expiry time (e.g. 7d)
 
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_CALLBACK_URL=
+# Super Admin Seed Data
+SUPER_ADMIN_EMAIL=      # Application start auto-create super admin email
+SUPER_ADMIN_PASSWORD=   # Super admin default password
 
-EXPRESS_SESSION_SECRET=
+# Google OAuth Authentication
+GOOGLE_CLIENT_ID=        # Google OAuth Client ID (Google Cloud Console)
+GOOGLE_CLIENT_SECRET=    # Google OAuth Client Secret
+GOOGLE_CALLBACK_URL=     # After Google login backend callback URL
 
-FRONTEND_URL=
+# Express Session
+EXPRESS_SESSION_SECRET= # Express session encryption secret (It's need for Google OAuth)
+
+# Frontend Configuration
+FRONTEND_URL=            # Frontend application URL (CORS & redirect purposes)
 
 # SSLCommerz
-
 SSL_STORE_ID=
 SSL_STORE_PASS=
 SSL_PAYMENT_API=
@@ -171,27 +178,24 @@ SSL_SUCCESS_FRONTEND_URL=
 SSL_FAIL_FRONTEND_URL=
 SSL_CANCEL_FRONTEND_URL=
 
-# Cloudinary
+# Cloudinary File Storage
+CLOUDINARY_CLOUD_NAME=   # Cloudinary account cloud name
+CLOUDINARY_API_KEY=      # Cloudinary API key
+CLOUDINARY_API_SECRET=   # Cloudinary API secret
+CLOUDINARY_URL=          # Cloudinary full connection URL (optional alternative)
 
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-CLOUDINARY_URL=
+# SMTP Email Configuration
+SMTP_HOST=               # SMTP server host (e.g. smtp.gmail.com)
+SMTP_PORT=               # SMTP server port (e.g. 587)
+SMTP_USER=               # Email account username
+SMTP_PASS=               # Email account password / app password
+SMTP_FROM=               # Email sender name & address
 
-# SMTP Email
-
-SMTP_HOST=
-SMTP_PORT=
-SMTP_USER=
-SMTP_PASS=
-SMTP_FROM=
-
-# Redis
-
-REDIS_HOST=
-REDIS_PORT=
-REDIS_USERNAME=
-REDIS_PASSWORD=
+# Redis Configuration
+REDIS_HOST=              # Redis server host
+REDIS_PORT=              # Redis server port
+REDIS_USERNAME=          # Redis username (it's need for cloud redis)
+REDIS_PASSWORD=          # Redis password
 
 ## 🧑‍💻 Getting Started (Local Setup)
 
