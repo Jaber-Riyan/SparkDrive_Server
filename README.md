@@ -221,31 +221,31 @@ bun run build
 This project integrates several third-party services.  
 All external service configurations are isolated inside the `src/app/config` directory to maintain separation of concerns and improve maintainability.
 
-### ☁️ Cloudinary
+### ☁️ `Cloudinary`
 
 - Used for file and media storage
 - Configuration file: `cloudinary.config.ts`
 - Credentials are managed via environment variables
 
-### 🔐 Passport.js (Google OAuth | Local Login)
+### 🔐 `Passport.js` (Google OAuth | Local Login)
 
 - Used for social authentication with Google & Local login
 - Configuration file: `passport.ts`
 - Session handling is secured using environment variables
 
-### 📤 Multer
+### 📤 `Multer`
 
 - Used for handling multipart/form-data for file uploads
 - Configuration file: `multer.config.ts`
 - Integrated with Cloudinary for direct uploads
 
-### 🚀 Redis
+### 🚀 `Redis`
 
 - Used for caching and OTP management
 - Configuration file: `redis.config.ts`
 - Supports both local and cloud Redis instances
 
-### 📧 Nodemailer SMTP Email Service (Path : ./src/app/utils/sendEmail.ts)
+### 📧 `Nodemailer` SMTP Email Service (Path : `./src/app/utils/sendEmail.ts`)
 
 - Used for sending OTPs, password reset, and notifications
 - Configuration handled in `sendEmail.ts`
