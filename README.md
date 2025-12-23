@@ -15,12 +15,11 @@ Backend REST API (Node.js + TypeScript)
 
 - JWT-based Authentication (Access & Refresh Tokens)
 - Role-based Authorization (User / Super Admin)
-- Passport JS OAuth Authentication
-- Passport JS For Local Login
+- Passport.js Authentication (Google OAuth & Local Strategy)
 - File Upload & Management (Cloudinary & Multer)
 - Folder Management with Protected Access
 - OTP-based Email Verification & Password Reset
-- Redis OTP Catching
+- Redis OTP Caching
 - Email Service using SMTP
 - Global Error Handling & Validation
 - Modular & Scalable Architecture
@@ -33,7 +32,7 @@ Backend REST API (Node.js + TypeScript)
 - **Language:** TypeScript
 - **Framework:** Express.js
 - **Database:** MongoDB (Mongoose)
-- **Authentication:** JWT, Passport (Google OAuth)
+- **Authentication**: JWT, Passport.js (Google OAuth & Local Strategy)
 - **Caching:** Redis
 - **File Storage:** Cloudinary
 - **Email:** SMTP (EJS Templates)
@@ -133,27 +132,45 @@ Backend REST API (Node.js + TypeScript)
 └── ⚙️ vercel.json
 ```
 
+## 🧑‍💻 Getting Started (Local Setup)
+
+```bash
+# clone
+git clone https://github.com/Jaber-Riyan/SparkDrive_Server.git
+cd SparkDrive_Server
+
+# Install Dependencies
+bun install or bun i
+
+# Run in Development Mode
+bun dev
+
+# Build for Production
+bun run build
+
+```
+
 ## Environments Variables
 
-````bash
+```bash
 # Server Configuration
-PORT=            # Backend server port where server run (e.g. 5000)
-NODE_ENV=        # Application environment (development | production)
-DB_URL=          # MongoDB connection string (MongoDB Atlas / Local MongoDB)
+PORT=                    # Backend server port where the application runs (e.g. 5000)
+NODE_ENV=                # Application environment (development | production)
+DB_URL=                  # MongoDB connection string (MongoDB Atlas / Local MongoDB)
 
 # Security & Password Hashing
-BCRYPT_SALT_ROUND=   # Password hash strength (higher = more secure but slower)
+BCRYPT_SALT_ROUND=       # Password hash strength (higher = more secure but slower)
 
 # JWT Authentication
-JWT_ACCESS_SECRET=      # Access token sign secret key
-JWT_ACCESS_EXPIRES=     # Access token expiry time (e.g. 1d, 12h)
+JWT_ACCESS_SECRET=       # Access token sign secret key
+JWT_ACCESS_EXPIRES=      # Access token expiry time (e.g. 1d, 12h)
 
-JWT_REFRESH_SECRET=     # Refresh token sign secret key
-JWT_REFRESH_EXPIRES=    # Refresh token expiry time (e.g. 7d)
+JWT_REFRESH_SECRET=      # Refresh token sign secret key
+JWT_REFRESH_EXPIRES=     # Refresh token expiry time (e.g. 7d)
 
 # Super Admin Seed Data
-SUPER_ADMIN_EMAIL=      # Application start auto-create super admin email
-SUPER_ADMIN_PASSWORD=   # Super admin default password
+SUPER_ADMIN_EMAIL=       # Email used to auto-create the super admin on application startup
+SUPER_ADMIN_PASSWORD=    # Default password for the super admin account
 
 # Google OAuth Authentication
 GOOGLE_CLIENT_ID=        # Google OAuth Client ID (Google Cloud Console)
@@ -161,7 +178,7 @@ GOOGLE_CLIENT_SECRET=    # Google OAuth Client Secret
 GOOGLE_CALLBACK_URL=     # After Google login backend callback URL
 
 # Express Session
-EXPRESS_SESSION_SECRET= # Express session encryption secret (It's need for Google OAuth)
+EXPRESS_SESSION_SECRET=  # Secret used to encrypt Express sessions (required for Google OAuth)
 
 # Frontend Configuration
 FRONTEND_URL=            # Frontend application URL (CORS & redirect purposes)
@@ -195,26 +212,11 @@ SMTP_FROM=               # Email sender name & address
 # Redis Configuration
 REDIS_HOST=              # Redis server host
 REDIS_PORT=              # Redis server port
-REDIS_USERNAME=          # Redis username (it's need for cloud redis)
+REDIS_USERNAME=          # Redis username (required for cloud Redis providers)
 REDIS_PASSWORD=          # Redis password
 
-## 🧑‍💻 Getting Started (Local Setup)
-
-```bash
-# clone
-git clone https://github.com/Jaber-Riyan/SparkDrive_Server.git
-cd SparkDrive_Server
-
-# Install Dependencies
-bun install
-
-# Run in Development Mode
-bun dev
-
-# Build for Production
-bun run build
-
-````
+This approach ensures better security, scalability, and maintainability across different environments.
+```
 
 ## 🔌 External Services & Configuration
 
@@ -251,7 +253,6 @@ All external service configurations are isolated inside the `src/app/config` dir
 - Configuration handled in `sendEmail.ts`
 - Email templates are written using EJS
 
-All sensitive credentials are stored securely using environment variables and are not exposed in the source code.
 
 ## 👤 Author
 
