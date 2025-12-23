@@ -133,6 +133,8 @@ Backend REST API (Node.js + TypeScript)
 └── ⚙️ vercel.json
 ```
 
+## Environments Variables
+```bash
 PORT=
 DB_URL=
 NODE_ENV=
@@ -207,6 +209,7 @@ bun dev
 # Build for Production
 bun run build
 
+```
 ```
 
 🔐 Authentication Flow
