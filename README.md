@@ -134,7 +134,8 @@ Backend REST API (Node.js + TypeScript)
 ```
 
 ## Environments Variables
-```bash
+
+````bash
 # Server Configuration
 PORT=            # Backend server port where server run (e.g. 5000)
 NODE_ENV=        # Application environment (development | production)
@@ -213,18 +214,44 @@ bun dev
 # Build for Production
 bun run build
 
-```
-```
+````
 
-🔐 Authentication Flow
+## 🔌 External Services & Configuration
 
-- Login → Access Token + Refresh Token
+This project integrates several third-party services.  
+All external service configurations are isolated inside the `src/app/config` directory to maintain separation of concerns and improve maintainability.
 
-- Tokens handled via secure HTTP-only cookies
+### ☁️ Cloudinary
 
-- Role-based route protection middleware
+- Used for file and media storage
+- Configuration file: `cloudinary.config.ts`
+- Credentials are managed via environment variables
 
-- Google OAuth supported
+### 🔐 Passport.js (Google OAuth | Local Login)
+
+- Used for social authentication with Google & Local login
+- Configuration file: `passport.ts`
+- Session handling is secured using environment variables
+
+### 📤 Multer
+
+- Used for handling multipart/form-data for file uploads
+- Configuration file: `multer.config.ts`
+- Integrated with Cloudinary for direct uploads
+
+### 🚀 Redis
+
+- Used for caching and OTP management
+- Configuration file: `redis.config.ts`
+- Supports both local and cloud Redis instances
+
+### 📧 Nodemailer SMTP Email Service (Path : ./src/app/utils/sendEmail.ts)
+
+- Used for sending OTPs, password reset, and notifications
+- Configuration handled in `sendEmail.ts`
+- Email templates are written using EJS
+
+All sensitive credentials are stored securely using environment variables and are not exposed in the source code.
 
 ## 👤 Author
 
